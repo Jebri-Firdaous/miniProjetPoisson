@@ -24,7 +24,7 @@ Fournir un outil simple, intuitif et performant pour permettre aux **pisciculteu
 | Frontend | Angular |
 | Backend | Spring Boot |
 | Base de données | MySQL (ou PostgreSQL) |
-| Stockage images | Backend (fichiers ou base64) |
+| Stockage images | Backend (fichiers) |
 
 ---
 
