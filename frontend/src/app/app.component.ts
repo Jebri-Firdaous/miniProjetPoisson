@@ -1,13 +1,19 @@
 import { Component } from '@angular/core';
+import { HeaderComponent } from '../app/layouts/header/header.component';
+import { FooterComponent } from '../app/layouts/footer/footer.component';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [
+    HeaderComponent,
+    FooterComponent, 
+    RouterOutlet,  
+  ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'MiniProjetFormation';
+  title = 'MonApp';
 }
