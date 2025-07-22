@@ -35,7 +35,6 @@ Fournir un outil simple, intuitif et performant pour permettre aux **pisciculteu
 - ✏️ **Modification** des informations
 - 🗑️ **Suppression** d’un poisson du catalogue
 - 📸 **Téléversement et affichage** des images
-- 🔐 **Stockage sécurisé** des données avec gestion des erreurs
 
 ---
 
