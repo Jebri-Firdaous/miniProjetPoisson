@@ -12,7 +12,9 @@ import { CommonModule } from '@angular/common';
 })
 export class ListPoissonsComponent implements OnInit {
   poissons: Poisson[] = [];
-  poissonSelectionne: Poisson | null = null;
+  poissonSelectionneDetail: Poisson | null = null;
+  poissonSelectionneForm: Poisson | null = null;
+
   formPoisson!: FormGroup;
   selectedFile: File | null = null;
   imagePreview: string | ArrayBuffer | null = null;
@@ -42,16 +44,32 @@ export class ListPoissonsComponent implements OnInit {
     });
   }
 
+  ouvrirCarteDetail(poisson: Poisson) {
+    this.poissonSelectionneDetail = poisson;
+  }
+
+  fermerCarteDetail() {
+    this.poissonSelectionneDetail = null;
+  }
+
   ouvrirFormulaire(poisson: Poisson) {
-    this.poissonSelectionne = poisson;
+    this.poissonSelectionneForm = poisson;
     this.modeAjout = false;
     this.formPoisson.patchValue(poisson);
-    this.imagePreview = '/' + poisson.imageUrl;
+    this.imagePreview = 'http://localhost:8081/backend/' + poisson.imageUrl;
+    this.selectedFile = null;
+  }
+
+  ouvrirFormulairePourAjout() {
+    this.poissonSelectionneForm = null;
+    this.modeAjout = true;
+    this.formPoisson.reset();
+    this.imagePreview = null;
     this.selectedFile = null;
   }
 
   fermerFormulaire() {
-    this.poissonSelectionne = null;
+    this.poissonSelectionneForm = null;
     this.modeAjout = false;
     this.formPoisson.reset();
     this.imagePreview = null;
@@ -65,7 +83,6 @@ export class ListPoissonsComponent implements OnInit {
       return;
     }
     this.selectedFile = input.files[0];
-
     const reader = new FileReader();
     reader.onload = () => {
       this.imagePreview = reader.result;
@@ -75,11 +92,10 @@ export class ListPoissonsComponent implements OnInit {
 
   enregistrerModification() {
     if (this.formPoisson.invalid) return;
-
     const formValue = this.formPoisson.value;
 
-    if (this.selectedFile && this.poissonSelectionne) {
-      this.poissonService.updatePoissonWithImage(this.poissonSelectionne.id!, formValue, this.selectedFile)
+    if (this.selectedFile && this.poissonSelectionneForm) {
+      this.poissonService.updatePoissonWithImage(this.poissonSelectionneForm.id!, formValue, this.selectedFile)
         .subscribe({
           next: () => {
             this.fermerFormulaire();
@@ -107,10 +123,7 @@ export class ListPoissonsComponent implements OnInit {
 
   supprimerPoisson(id?: number) {
     if (!id) return;
-
-    if (!confirm('Voulez-vous vraiment supprimer ce poisson ?')) {
-      return;
-    }
+    if (!confirm('Voulez-vous vraiment supprimer ce poisson ?')) return;
 
     this.poissonService.delete(id).subscribe({
       next: () => {
@@ -124,19 +137,9 @@ export class ListPoissonsComponent implements OnInit {
     });
   }
 
-  ouvrirFormulairePourAjout() {
-    this.poissonSelectionne = null;
-    this.modeAjout = true;
-    this.formPoisson.reset();
-    this.imagePreview = null;
-    this.selectedFile = null;
-  }
-
   ajouterPoisson() {
-    if (this.formPoisson.invalid) return;
-
-    if (!this.selectedFile) {
-      alert("Veuillez sélectionner une image pour le nouveau poisson.");
+    if (this.formPoisson.invalid || !this.selectedFile) {
+      alert("Veuillez remplir le formulaire et sélectionner une image.");
       return;
     }
 
@@ -149,7 +152,7 @@ export class ListPoissonsComponent implements OnInit {
           this.chargerPoissons();
         },
         error: (err) => {
-          alert('Erreur lors de l\'ajout du poisson');
+          alert("Erreur lors de l'ajout du poisson");
           console.error(err);
         }
       });
